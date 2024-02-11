@@ -104,7 +104,7 @@ struct Home_Screen: View {
     func getRequest(message: String) {
         // Define the URL endpoint to which you want to send data
         var components = URLComponents(string: "http://192.168.90.31/message")!
-        components.queryItems = [URLQueryItem(name: "message", value: message)]
+        components.queryItems = [URLQueryItem(name: "message", value: message.lowercased())]
         
         // Create a URLRequest with the URL
         var request = URLRequest(url: components.url!)
