@@ -11,6 +11,7 @@ import RealityKit
 
 
 struct ContentView: View {
+    let buttonColor : Color = Color(red: 230/255, green: 2/255, blue: 219/255)
     @Binding var Sprite: String
     var sprite: String // Declaring sprite as a global variable
     
@@ -18,11 +19,22 @@ struct ContentView: View {
         self._Sprite = Sprite // ERROR: Cannot assign value of type 'Binding<String>' to type 'String'
         self.sprite = _Sprite.wrappedValue // Accessing the wrapped value of the binding
     }
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
-        VStack {
-            ARViewContainer(sprite: sprite).edgesIgnoringSafeArea(.all)
-
+        NavigationView {
+            VStack {
+                ARViewContainer(sprite: sprite).edgesIgnoringSafeArea(.all)
+                Button("Exit Game") {
+                                    // Navigate back to the home screen
+                    presentationMode.wrappedValue.dismiss()
+                }
+                .padding()
+                .foregroundColor(.white)
+                .background(buttonColor)
+                .cornerRadius(10)
+                .font(.system(size: 30))
+            }
         }
     }
 }
