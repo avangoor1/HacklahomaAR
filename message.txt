@@ -1,0 +1,244 @@
+#include <ESP8266WiFi.h>
+#define LED D2  // LED at GPIO4 D2
+
+// Define all of the Note Frequencies
+#define BUZ D6
+
+// Set up the choice int
+int choice = -1;
+
+const char* ssid = "Nicholas DeVilliers iPhone";  // wi-fi name
+const char* password = "mark22222";     // wi-fi password
+unsigned char status_led = 0;
+
+WiFiServer server(80);
+
+void setup() {
+  // Set up the buzzer
+  pinMode(BUZ, OUTPUT);
+  noTone(BUZ);
+
+
+  Serial.begin(115200);
+  pinMode(LED, OUTPUT);
+  digitalWrite(LED, LOW);
+
+  // Connect to WiFi network
+  Serial.println();
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.println("WiFi connected");
+
+  // Start the server
+  server.begin();
+  Serial.println("Server started at... ");
+  Serial.println(WiFi.localIP());
+}
+
+void loop() {
+  // Check if a client has connected
+  WiFiClient client = server.available();
+  if (!client) { return; }
+
+  // Wait until the client sends some data
+  Serial.println("new client");
+  while (!client.available()) {
+    delay(1);
+  }
+  Serial.println("new client available");
+
+  // Read the first line of the request
+  String req = client.readStringUntil('\r');
+  Serial.println(req);
+  client.flush();
+
+  // Match the request
+  if (req.indexOf("/ledoff") != -1) {
+    status_led = 0;
+    digitalWrite(LED, LOW);
+    Serial.println("LED OFF");
+  } 
+  else if (req.indexOf("/ledon") != -1) {
+    status_led = 1;
+    digitalWrite(LED, HIGH);
+    Serial.println("LED ON");
+  } 
+  else if (req.indexOf("/bowling") != -1) {
+    Serial.println();
+    Serial.println("Ananya Sent A Message with: ");
+    Serial.println(req);
+    Serial.println();
+
+    tone(BUZ, 390);
+    delay(100);
+    tone(BUZ, 786);
+    delay(100);
+    tone(BUZ, 1174);
+    delay(100);
+    tone(BUZ, 584);
+    delay(100);
+    tone(BUZ, 1572);
+    delay(100);
+    noTone(BUZ);
+
+    choice = 1;
+  } 
+  else if (req.indexOf("/walk") != -1) {
+    Serial.println();
+    Serial.println("Ananya Sent A Message with: ");
+    Serial.println(req);
+    Serial.println();
+
+    tone(BUZ, 1569);
+    delay(200);
+    tone(BUZ, 1172);
+    delay(200);
+    tone(BUZ, 1172);
+    delay(200);
+    noTone(BUZ);
+    delay(200);
+
+    tone(BUZ, 1172);
+    delay(200);
+    noTone(BUZ);
+    delay(200);
+    tone(BUZ, 1040);
+    delay(200);
+    noTone(BUZ);
+    delay(200);
+
+    tone(BUZ, 984);
+    delay(200);
+    tone(BUZ, 1042);
+    delay(200);
+    tone(BUZ, 1171);
+    delay(200);
+    noTone(BUZ);
+    delay(200);
+
+    tone(BUZ, 1172);
+    delay(200);
+    noTone(BUZ);
+    delay(200);
+    tone(BUZ, 784);
+    delay(200);
+    noTone(BUZ);
+    delay(200);
+
+    tone(BUZ, 1569);
+    delay(200);
+    tone(BUZ, 1172);
+    delay(200);
+    tone(BUZ, 1172);
+    delay(200);
+    noTone(BUZ);
+    delay(200);
+
+    tone(BUZ, 1172);
+    delay(200);
+    noTone(BUZ);
+    delay(200);
+    tone(BUZ, 1040);
+    delay(200);
+    noTone(BUZ);
+    delay(200);
+
+    tone(BUZ, 984);
+    delay(200);
+    tone(BUZ, 1042);
+    delay(200);
+    tone(BUZ, 1171);
+    delay(200);
+    noTone(BUZ);
+    delay(200);
+
+    tone(BUZ, 1172);
+    delay(200);
+    noTone(BUZ);
+    delay(200);
+    tone(BUZ, 784);
+    delay(200);
+    noTone(BUZ);
+    delay(200);
+
+    choice = 2;
+  } 
+  else if (req.indexOf("/hunting") != -1) {
+    Serial.println();
+    Serial.println("Ananya Sent A Message with: ");
+    Serial.println(req);
+    Serial.println();
+
+    tone(BUZ, 342);
+    delay(100);
+    tone(BUZ, 342);
+    delay(100);
+    tone(BUZ, 684);
+    delay(100);
+    tone(BUZ, 960);
+    delay(100);
+    tone(BUZ, 480);
+    delay(100);
+    noTone(BUZ);
+
+    choice = 3;
+  } 
+  else {
+    Serial.println();
+    Serial.println("A Message was sent incorrectly with: ");
+    Serial.println(req);
+    Serial.println();
+
+    choice = -1;
+  }
+
+  // Return the response
+  // HTTP Header
+  client.println("HTTP/1.1 200 OK");
+  client.println("Content-Type: text/html");
+  client.println("Connection: close");
+  client.println("");
+
+  if(choice == 1)
+  {
+    client.println("<!DOCTYPE HTML>");
+    client.println("<HTML>");
+    client.println("<!DOCTYPE HTML><head><title>Yesterday's Games Tomorrow</title><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Orbitron&display=swap\" rel=\"stylesheet\"><style type=\"text/css\">body {font-family: 'Orbitron', sans-serif;}</style></head><body background = \"background.png\" text = \"#6600FF\"><center><div style = \"background-color: black; width: 80%; padding-bottom: 20px\"><h1>Yesterday's Games Tomorrow</h1><br><img src = \"bowling.png\" style = \"width: 500px\"/><br><font size = \"10\">Now playing: Bowling</font></div></center></body>");
+    client.println("</HTML>");
+  }
+  else if(choice == 2)
+  {
+    client.println("<!DOCTYPE HTML>");
+    client.println("<HTML>");
+    client.println("<!DOCTYPE HTML><head><title>Yesterday's Games Tomorrow</title><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Orbitron&display=swap\" rel=\"stylesheet\"><style type=\"text/css\">body {font-family: 'Orbitron', sans-serif;}</style></head><body background = \"background.png\" text = \"#6600FF\"><center><div style = \"background-color: black; width: 80%; padding-bottom: 20px\"><h1>Yesterday's Games Tomorrow</h1><br><img src = \"darts.png\" style = \"width: 500px\"/><br><font size = \"10\">Now playing: Darts</font></div></center></body>");
+    client.println("</HTML>");
+  }
+  else if(choice ==3)
+  {
+    client.println("<!DOCTYPE HTML>");
+    client.println("<HTML>");
+    client.println("<!DOCTYPE HTML><head><title>Yesterday's Games Tomorrow</title><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Orbitron&display=swap\" rel=\"stylesheet\"><style type=\"text/css\">body {font-family: 'Orbitron', sans-serif;}</style></head><body background = \"background.png\" text = \"#6600FF\"><center><div style = \"background-color: black; width: 80%; padding-bottom: 20px\"><h1>Yesterday's Games Tomorrow</h1><br><img src = \"asteroids.png\" style = \"width: 500px\"/><br><font size = \"10\">Now playing: Asteroids</font></div></center></body>");
+    client.println("</HTML>");
+  }
+  else
+  {
+    client.println("<!DOCTYPE HTML>");
+    client.println("<HTML>");
+
+    // Buttons on the website
+    client.println("<!DOCTYPE HTML><head><title>Yesterday's Games Tomorrow</title><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Orbitron&display=swap\" rel=\"stylesheet\"><style type=\"text/css\">body {font-family: \'Orbitron\', sans-serif;}</style></head><body background = \"background.png\" text = \"#6600FF\"><center><div style = \"background-color: black; width: 80%; padding-bottom: 20px\"><h1>Yesterday's Games Tomorrow</h1><br><font size = \"10\">Waiting for game...</font></div></center></body>");
+    client.println("</html>");
+  }
+
+  delay(1);
+  Serial.println("Client disconnected");
+}
